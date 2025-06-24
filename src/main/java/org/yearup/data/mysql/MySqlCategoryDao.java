@@ -52,7 +52,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     public Category getById(int categoryId)
     {
         // get category by id
-        String sql = "SELECT * FROM Categories WHERE CategoryID = ?";
+        String sql = "SELECT * FROM Categories WHERE category_id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -95,6 +95,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
                 if (generatedKeys.next()) {
                     int generatedId = generatedKeys.getInt(1);
                     category.setCategoryId(generatedId);
+                    return category;
                 } else {
                     throw new SQLException("Creating category failed, no ID obtained.");
                 }
@@ -103,21 +104,23 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
             e.printStackTrace();
         }
 
-        //return category;
-        return null;
+        return category;
+        //return null;
     }
 
     @Override
     public void update(int categoryId, Category category)
     {
         // update category
-        String sql = "UPDATE categories SET name = ? WHERE category_id = ?";
+        String sql = "UPDATE categories SET name = ?, description = ? WHERE category_id = ?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, category.getName());
-            statement.setInt(2,category.getCategoryId());
+            statement.setString(2, category.getDescription());
+            statement.setInt(3, categoryId);
+
 
             statement.executeUpdate();
         } catch (SQLException e) {

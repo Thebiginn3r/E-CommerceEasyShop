@@ -49,7 +49,11 @@ public class CategoriesController
     @PreAuthorize("permitAll()")
     public Category getById(@PathVariable int id) {
         // get the category by id
-        return categoryDao.getById(id);
+        try {
+            return categoryDao.getById(id);
+        } catch (Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
     // the url to return all products in category 1 would look like this
@@ -58,7 +62,11 @@ public class CategoriesController
     @PreAuthorize("permitAll()")
     public List<Product> getProductsById(@PathVariable int categoryId) {
         // get a list of product by categoryId
-        return productDao.listByCategoryId(categoryId);
+        try {
+            return productDao.listByCategoryId(categoryId);
+        } catch (Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
     // add annotation to call this method for a POST action
@@ -68,7 +76,11 @@ public class CategoriesController
     @ResponseStatus(value = HttpStatus.CREATED)
     public Category addCategory(@RequestBody Category category) {
         // insert the category
-        return categoryDao.create(category);
+        try {
+            return categoryDao.create(category);
+        } catch (Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
     // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
@@ -77,7 +89,11 @@ public class CategoriesController
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateCategory(@PathVariable int id, @RequestBody Category category) {
         // update the category by id
-        categoryDao.update(id,category);
+        try {
+            categoryDao.update(id, category);
+        } catch (Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
 
@@ -88,6 +104,10 @@ public class CategoriesController
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable int id) {
         // delete the category by id
-        categoryDao.delete(id);
+        try {
+            categoryDao.delete(id);
+        } catch (Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 }

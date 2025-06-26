@@ -38,8 +38,8 @@ public class ShoppingCartController
 
     // each method in this controller requires a Principal object as a parameter
     @GetMapping("")
-    public ShoppingCart getCart(Principal principal)
-    {
+    @PreAuthorize("isAuthenticated()")
+    public ShoppingCart getCart(Principal principal) {
         try {
             // get the currently logged in username
             String userName = principal.getName();
@@ -47,8 +47,14 @@ public class ShoppingCartController
             User user = userDao.getByUserName(userName);
             int userId = user.getId();
 
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
+            ShoppingCart cart = shoppingCartDao.getByUserId(user.getId());
+            return cart != null ? cart : new ShoppingCart();
+
             // use the shoppingcartDao to get all items in the cart and return the cart
-            return shoppingCartDao.getByUserId(userId);
+            //return shoppingCartDao.getByUserId(userId);
         }
         catch(Exception e)
         {
@@ -59,6 +65,7 @@ public class ShoppingCartController
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("/products/{productId}")
+    @PreAuthorize("isAuthenticated()")
     public void addToCart(@PathVariable int productId, Principal principal){
         String username = principal.getName();
         int userId = userDao.getIdByUsername(username);
@@ -71,6 +78,7 @@ public class ShoppingCartController
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("/products/{productId}")
+    @PreAuthorize("isAuthenticated()")
     public void updateAmount(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal){
         String username = principal.getName();
         int userId = userDao.getIdByUsername(username);
@@ -80,6 +88,7 @@ public class ShoppingCartController
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
     @DeleteMapping
+    @PreAuthorize("isAuthenticated()")
     public void clearCart(Principal principal){
         String userName = principal.getName();
         int userId = userDao.getIdByUsername(userName);

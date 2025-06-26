@@ -102,4 +102,6 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             throw new RuntimeException("Error clearing cart", e);
         }
     }
+
+
 }

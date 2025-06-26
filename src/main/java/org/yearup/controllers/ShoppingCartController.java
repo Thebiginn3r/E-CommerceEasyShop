@@ -69,6 +69,9 @@ public class ShoppingCartController
     public void addToCart(@PathVariable int productId, Principal principal){
         String username = principal.getName();
         int userId = userDao.getIdByUsername(username);
+        if(userId <= 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
         int quantity = 1;
         shoppingCartDao.addProduct(userId, productId, quantity);
     }
@@ -94,4 +97,5 @@ public class ShoppingCartController
         int userId = userDao.getIdByUsername(userName);
         shoppingCartDao.clearCart(userId);
     }
+
 }

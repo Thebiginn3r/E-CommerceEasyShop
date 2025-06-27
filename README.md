@@ -39,7 +39,13 @@ Here is where your cart would be
 ![cart.png](cart.png)
 
 Here is what a search by color would look like
+![color.png](color.png)
 
 This is what the filter by category looks like
+![category.png](category.png)
 
 This is what it would look like if you wanted to search between a price range
+![price.png](price.png)
+
+## Thanks to
+All my fellow Year Up teammates for their dedication, teamwork, continuous support, and guidance throughout this project.

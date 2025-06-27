@@ -6,10 +6,9 @@ import java.util.List;
 
 public interface ShoppingCartDao
 {
-    List<ShoppingCart> getAllCarts();
     ShoppingCart getByUserId(int userId);
-    void updateProductAmount(int userId, int productId, int quantity);
-    void clearCart(int userId);
-    void addProduct(int userId, int productId, int quantity);
+    ShoppingCart updateProductAmount(int userId, int productId, int quantity);
+    ShoppingCart clearCart(int userId);
+    ShoppingCart addProduct(int userId, int productId, int quantity);
     // add additional method signatures here
 }

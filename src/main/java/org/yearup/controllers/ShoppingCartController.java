@@ -72,8 +72,8 @@ public class ShoppingCartController
         if(userId <= 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-        int quantity = 1;
-        shoppingCartDao.addProduct(userId, productId, quantity);
+       // int quantity = 1;
+        shoppingCartDao.addProduct(userId, productId, 1);
     }
 
 

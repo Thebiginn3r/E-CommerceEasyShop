@@ -14,16 +14,15 @@ import java.util.List;
 public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao {
     private final DataSource dataSource;
 
+    //private ShoppingCart shoppingCart;
+
     @Autowired
     public MySqlShoppingCartDao(DataSource dataSource) {
         super(dataSource);
         this.dataSource = dataSource;
+
     }
 
-    @Override
-    public List<ShoppingCart> getAllCarts() {
-        return List.of();
-    }
 
     @Override
     public ShoppingCart getByUserId(int userId) {
@@ -52,9 +51,10 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     }
 
     @Override
-    public void addProduct(int userId, int productId, int quantity) {
+    public ShoppingCart addProduct(int userId, int productId, int quantity) {
         String sql = "INSERT INTO shopping_cart (user_id, product_id, quantity) VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)";
+        ShoppingCart cart = new ShoppingCart();
 
         try (
                 Connection conn = dataSource.getConnection();
@@ -68,12 +68,14 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         } catch (SQLException e) {
             throw new RuntimeException("Error adding item to cart", e);
         }
+        return cart;
+
     }
 
     @Override
-    public void updateProductAmount(int userId, int productId, int quantity) {
+    public ShoppingCart updateProductAmount(int userId, int productId, int quantity) {
         String sql = "UPDATE shopping_cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
-
+        ShoppingCart cart = new ShoppingCart();
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)
@@ -86,12 +88,13 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         } catch (SQLException e) {
             throw new RuntimeException("Error updating item in cart", e);
         }
+        return cart;
     }
 
     @Override
-    public void clearCart(int userId) {
+    public ShoppingCart clearCart(int userId) {
         String sql = "DELETE FROM shopping_cart WHERE user_id = ?";
-
+        ShoppingCart cart = new ShoppingCart();
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)
@@ -101,6 +104,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         } catch (SQLException e) {
             throw new RuntimeException("Error clearing cart", e);
         }
+        return cart;
     }
 
 

@@ -28,6 +28,7 @@ public class ShoppingCartController
     private ShoppingCartDao shoppingCartDao;
     private UserDao userDao;
     private ProductDao productDao;
+    private ShoppingCart ShoppingCart;
 
     @Autowired
     public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao, ProductDao productDao) {
@@ -38,7 +39,7 @@ public class ShoppingCartController
 
     // each method in this controller requires a Principal object as a parameter
     @GetMapping("")
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     public ShoppingCart getCart(Principal principal) {
         try {
             // get the currently logged in username
@@ -65,8 +66,8 @@ public class ShoppingCartController
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("/products/{productId}")
-    @PreAuthorize("isAuthenticated()")
-    public void addToCart(@PathVariable int productId, Principal principal){
+    //@PreAuthorize("isAuthenticated()")
+    public ShoppingCart addToCart(@PathVariable int productId, Principal principal){
         String username = principal.getName();
         int userId = userDao.getIdByUsername(username);
         if(userId <= 0) {
@@ -74,6 +75,7 @@ public class ShoppingCartController
         }
        // int quantity = 1;
         shoppingCartDao.addProduct(userId, productId, 1);
+        return ShoppingCart;
     }
 
 
@@ -81,21 +83,23 @@ public class ShoppingCartController
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("/products/{productId}")
-    @PreAuthorize("isAuthenticated()")
-    public void updateAmount(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal){
+   // @PreAuthorize("isAuthenticated()")
+    public ShoppingCart updateAmount(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal){
         String username = principal.getName();
         int userId = userDao.getIdByUsername(username);
         shoppingCartDao.updateProductAmount(userId, productId, item.getQuantity());
+        return ShoppingCart;
     }
 
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
     @DeleteMapping
-    @PreAuthorize("isAuthenticated()")
-    public void clearCart(Principal principal){
+    //@PreAuthorize("isAuthenticated()")
+    public ShoppingCart clearCart(Principal principal){
         String userName = principal.getName();
         int userId = userDao.getIdByUsername(userName);
         shoppingCartDao.clearCart(userId);
+        return ShoppingCart;
     }
 
 }
